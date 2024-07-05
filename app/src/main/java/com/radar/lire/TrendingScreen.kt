@@ -17,21 +17,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.radar.lire.modules.TrendingMangaReaderManga
 import com.radar.lire.modules.TrendingMangaReaderResponse
 
 @Composable
 fun TrendingScreen(){
 
-
+    var trendingManga by remember {
+        mutableStateOf<TrendingMangaReaderManga?>(null)
+    }
 
     var trendingMangaList by remember {
         mutableStateOf<TrendingMangaReaderResponse?>(null)
     }
 
+    var showBottomSheet by remember {
+        mutableStateOf(false)
+    }
 
 
     var apiExceptionOutput by remember {
         mutableStateOf<Exception?>(null)
+    }
+
+    if (showBottomSheet && trendingManga != null){
+        TrendingBottomSheet(manga = trendingManga!!, onDismissRequest = {showBottomSheet = false})
     }
 
     LaunchedEffect(Unit){
@@ -66,7 +76,8 @@ fun TrendingScreen(){
                         _, manga ->
 
                     TrendingMangaCard(manga = manga, onClick = {
-
+                        trendingManga = manga
+                        showBottomSheet = true
                     })
                 }
             }
